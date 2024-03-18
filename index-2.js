@@ -1,3 +1,4 @@
+const { promises } = require('dns');
 const fs = require('fs');
 const superagent = require('superagent');
 const readFilePro = file => {
@@ -22,8 +23,12 @@ const getDogPic = async () => {
         const breed = data.toString().trim();
         console.log(`Breed: ${breed}`);
 
-        const res = await superagent.get(`https://dog.ceo/api/breed/${breed}/images/random`)
-        await writeFilePro('dog-img.txt', res.body.message)
+        const res1pRO = superagent.get(`https://dog.ceo/api/breed/${breed}/images/random`)
+        const res2pRO = superagent.get(`https://dog.ceo/api/breed/${breed}/images/random`)
+        const res3pRO = superagent.get(`https://dog.ceo/api/breed/${breed}/images/random`)
+        const all = await Promise.all([res1pRO, res2pRO, res3pRO])
+        const imgs = all.map(img => img.body.message)
+        await writeFilePro('dog-img.txt', imgs.join('\n'))
         console.log("Random dog image saved to file")
     } catch (err) {
         console.error('Error fetching image:', err);
