@@ -17,19 +17,40 @@ const writeFilePro = (file, data) => {
     })
 }
 const getDogPic = async () => {
-    try {      
+    try {
         const data = await readFilePro(`${__dirname}/dog.txt`)
         const breed = data.toString().trim();
         console.log(`Breed: ${breed}`);
-    
+
         const res = await superagent.get(`https://dog.ceo/api/breed/${breed}/images/random`)
         await writeFilePro('dog-img.txt', res.body.message)
         console.log("Random dog image saved to file")
     } catch (err) {
         console.error('Error fetching image:', err);
+        throw err
     }
+    return '2,ready 🐩'
 }
-getDogPic();
+
+(async () => {
+    try {
+        console.log('1,will get dog pics')
+        const x = await getDogPic()
+        console.log(x)
+        console.log('3,done getting dog pictures')
+    } catch (err) {
+        console.log('Error 🔥')
+    }
+})()
+/* 
+console.log('1,will get dog pics')
+getDogPic().then((x)=>{
+    console.log(x)
+    console.log('3,done getting dog pictures')
+}).catch((err)=>{
+    console.log('Error 🔥')
+})*/
+
 /*
 readFilePro(`${__dirname}/dog.txt`)
 .then(data => {
