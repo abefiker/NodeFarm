@@ -18,13 +18,13 @@ app.get('/api/v1/tours', (req, res) => {
         }
     })
 })
-app.get('/api/v1/tours/:id',(req,res)=>{
+app.get('/api/v1/tours/:id', (req, res) => {
     console.log(req.params)
-    const id = req.params.id*1
+    const id = req.params.id * 1
     const tour = tours.find(el => el.id === id)
     res.status(200).json({
-        status:'success',
-        data:{
+        status: 'success',
+        data: {
             tour: tour
         }
     })
@@ -42,6 +42,38 @@ app.post('/api/v1/tours', (req, res) => {
         });
     });
     console.log(req.body);
+})
+app.patch('/api/v1/tours/:id', (req, res) => {
+    if (req.params.id * 1 > tours.length) {
+        res.status(404).json(
+            {
+                status: 'error',
+                message: 'Tour not found'
+            }
+        )
+    }
+    res.status(200).json({
+        status: 'success',
+        data: {
+            tour: '<Updated tour is here ...>'
+        }
+    })
+})
+app.delete('/api/v1/tours/:id', (req, res) => {
+    if (req.params.id * 1 > tours.length) {
+        res.status(404).json(
+            {
+                status: 'error',
+                message: 'Tour not found'
+            }
+        )
+    }
+    res.status(204).json({
+        status: 'success',
+        data: {
+            tour: null
+        }
+    })
 })
 const port = 3000
 app.listen(port, () => {
