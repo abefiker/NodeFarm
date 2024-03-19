@@ -9,6 +9,8 @@ const userRouter = require('./routes/userRoutes')
 //1) Middlewares
 app.use(express.json())
 app.use(morgan('dev'))
+
+app.use(express.static(`${__dirname}/public`))
 app.use((req, res, next) => {
     console.log('Hello from the middleware 👋')
     next()
@@ -19,7 +21,7 @@ app.use((req, res, next) => {
 })
 
 //2) Routes
-app.use('/api/v1/tours',tourRouter)
-app.use('/api/v1/users',userRouter)
+app.use('/api/v1/tours', tourRouter)
+app.use('/api/v1/users', userRouter)
 
 module.exports = app
