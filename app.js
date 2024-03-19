@@ -15,6 +15,7 @@ app.use((req, res, next) => {
 })
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`))
 //2) route handlers
+////////////////////Tour handlers////////////////////////////////
 const getAllTour = (req, res) => {
     console.log(req.requestTime)
     res.status(200).json({
@@ -83,9 +84,45 @@ const deleteTour = (req, res) => {
         }
     })
 }
+////////////////////////////////User handling////////////////////////////////
+const getAllusers = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
+const getUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
+const createUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
+const updateUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
+const deleteUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
 //3) Routes
+////////////////////////////////tours routes////////////////////////////////
 app.route('/api/v1/tours').get(getAllTour).post(createTour)
 app.route('/api/v1/tours/:id').get(getTour).patch(updateTour).delete(deleteTour)
+////////////////////////////////users routes////////////////////////////////
+app.route('/api/v1/users').get(getAllusers).post(createUser)
+app.route('/api/v1/users/:id').get(getUser).patch(updateUser).delete(deleteUser)
+
 
 //4) Start the server
 const port = 3000
