@@ -2,16 +2,20 @@ const express = require('express');
 const fs = require('fs')
 const app = express()
 app.use(express.json())
-// app.get('/', (req, res) => {
-//     res.status(200).json({ message: 'Hello from the server side', app: 'natours' })
-// })
-// app.post('/', (req, res) => {
-//     res.send('Post will be perform at this endpoint ')
-// })
+app.use((req, res, next) => {
+    console.log('Hello from the middleware 👋')
+    next()
+})
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString()
+    next()
+})
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`))
 const getAllTour = (req, res) => {
+    console.log(req.requestTime)
     res.status(200).json({
         status: 'success',
+        requistedAt:req.requestTime,
         result: tours.length,
         data: {
             tours: tours
