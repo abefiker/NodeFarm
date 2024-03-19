@@ -3,12 +3,22 @@ const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-si
 exports.checkID = (req,res,next,val)=>{
     console.log(`Tour id : ${val}`)
     if (req.params.id * 1 > tours.length) {
-        res.status(404).json(
+        return res.status(404).json(
             {
                 status: 'error',
                 message: 'Tour not found'
             }
         )
+    }
+    next();
+}
+exports.checkBody = (req,res,next)=>{
+    console.log(`Tour name : ${req.body.name} , Tour price : ${req.body.price}`);
+    if(!req.body.name || !req.body.price){
+        return res.status(400).json({
+            status: 'error',
+            message: 'Please provide tour name and price'
+        })
     }
     next();
 }
