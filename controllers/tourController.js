@@ -2,35 +2,42 @@ const fs = require('fs');
 const Tour = require('../models/tourModel')
 
 
-exports.getAllTour = (req, res) => {
-    console.log(req.requestTime)
-    res.status(200).json({
-        status: 'success',
-        requistedAt: req.requestTime,
-        // result: tours.length,
-        // data: {
-        //     tours: tours
-        // }
-    })
+exports.getAllTour = async (req, res) => {
+    try {
+        const tours = await Tour.find()
+        res.status(200).json({
+            status: 'success',
+            requistedAt: req.requestTime,
+            result: tours.length,
+            data: {
+                tours: tours
+            }
+        })
+    } catch (error) {
+        res.status(404).json({
+            status: 'fail',
+            message: 'Server error while reading data ...😢🥹'
+        })
+    }
 }
-exports.getTour = (req, res) => {
-    console.log(req.params)
-    const id = req.params.id * 1
-    // const tour = tours.find(el => el.id === id)
-    // res.status(200).json({
-    //     status: 'success',
-    //     data: {
-    //         tour: tour
-    //     }
-    // })
+exports.getTour = async (req, res) => {
+    try {
+        const tour = await Tour.findOne({ _id: req.params.id })
+        res.status(200).json({
+            status: 'success',
+            data: {
+                tour: tour
+            }
+        })
+    } catch (error) {
+        res.status(404).json({
+            status: 'fail',
+            message: 'Server error while reading data ...😢🥹'
+        })
+    }
 }
 exports.createTour = async (req, res) => {
     try {
-        // const newTour = await Tour.create({
-        //     name: req.body.name,
-        //     rating: req.body.rating,
-        //     price: req.body.price
-        // })
         const newTour = await Tour.create(req.body)
         res.status(201).json({
             status: 'success',
