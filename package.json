@@ -5,7 +5,11 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon server.js",
+<<<<<<< Updated upstream
     "start:prod": "env:NODE_ENV=production nodemon server.js"
+=======
+    "start:prod":"env:NODE_ENV=production nodemon server.js"
+>>>>>>> Stashed changes
   },
   "author": "Abemelek Daniel",
   "license": "ISC",
