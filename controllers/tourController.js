@@ -2,7 +2,12 @@ const fs = require('fs');
 const Tour = require('../models/tourModel');
 const { json } = require('express');
 
-
+exports.topAliasTour = (req,res,next) =>{
+    req.query.limit= '5'
+    req.query.sort = '-ratingsAverage,price'
+    req.query.fields = 'name,description,duration,price,difficylty'
+    next()
+}
 exports.getAllTour = async (req, res) => {
     try {
 
