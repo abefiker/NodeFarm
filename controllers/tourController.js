@@ -112,7 +112,7 @@ exports.getTourStats = async (req, res) => {
             },
             {
                 $group: {
-                    _id: {$toUpper: '$difficulty'},
+                    _id: { $toUpper: '$difficulty' },
                     numTours: { $sum: 1 },
                     numRating: { $sum: '$ratingQuality' },
                     avgRating: { $avg: '$ratingsAverage' },
@@ -122,8 +122,11 @@ exports.getTourStats = async (req, res) => {
                 }
             },
             {
-                $sort:{avgPrice: 1}
-            }
+                $sort: { avgPrice: 1 }
+            },
+            // {
+            //     $match: { _id: { $ne: 'EASY'} }
+            // }
         ]);
 
         res.status(200).json({
@@ -139,3 +142,53 @@ exports.getTourStats = async (req, res) => {
         });
     }
 }
+//the following function implement the real life business logic
+//that want the busiest month that a lot of tours registered in the given year
+exports.getMonthlyPlan = async (req, res) => {
+    try {
+        const year = req.params.year * 1
+        const plan = await Tour.aggregate([
+            {
+                $unwind: '$startDates'
+            },
+            {
+                $match: {
+                    startDates: {
+                        $gte: new Date(year, 0, 1),
+                        $lte: new Date(year + 1, 0, 1)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: '$startDates' },
+                    numTours: { $sum: 1 },
+                    tours: { $push: '$name' }
+                }
+            },
+            {
+                $addFields: {
+                    month: '$_id'
+                }
+            },
+            {
+                $project: { _id: 0 }
+            },
+            {
+                $sort: { numTours: -1 }
+            },
+            {
+                $limit: 1
+            }
+        ])
+        res.status(200).json({
+            stattus: 'Success',
+            plan
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: 'Fail',
+            message: error.message // Display error message
+        });
+    }
+} 
