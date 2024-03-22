@@ -1,10 +1,25 @@
 const fs = require('fs');
-const Tour = require('../models/tourModel')
+const Tour = require('../models/tourModel');
+const { json } = require('express');
 
 
 exports.getAllTour = async (req, res) => {
     try {
-        const tours = await Tour.find()
+
+        console.log(req.query);
+        //build query
+        //1)filtering
+        const queryObj = { ...req.query };
+        const excludeFields = ['page', 'limit', 'sort', 'fields'];
+        excludeFields.forEach(el => delete queryObj[el]);
+        //advance filtering
+        let queryStr = JSON.stringify(queryObj)
+        queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
+        console.log(JSON.parse(queryStr))
+        const query = Tour.find(JSON.parse(queryStr));
+        //excute the query
+        const tours = await query
+        //send responce
         res.status(200).json({
             status: 'success',
             requistedAt: req.requestTime,
@@ -16,7 +31,7 @@ exports.getAllTour = async (req, res) => {
     } catch (error) {
         res.status(404).json({
             status: 'fail',
-            message: 'Server error while reading data ...😢🥹'
+            message: error
         })
     }
 }
