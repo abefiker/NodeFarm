@@ -1,48 +1,23 @@
 const fs = require('fs');
 const Tour = require('../models/tourModel');
-const { json } = require('express');
+const APIFeatires = require('../utils/apiFeatures');
 
-exports.topAliasTour = (req,res,next) =>{
-    req.query.limit= '5'
-    req.query.sort = '-ratingsAverage,price'
-    req.query.fields = 'name,description,duration,price,difficylty'
-    next()
-}
+
+exports.topAliasTour = (req, res, next) => {
+    console.log("req.query before defaults:", req.query); // Log initial query
+    req.query.limit = req.query.limit || '5';
+    req.query.sort = req.query.sort || '-ratingsAverage,price';
+    req.query.fields = req.query.fields || 'name,description,duration,price,difficulty';
+    console.log("req.query after defaults:", req.query); // Log modified query
+    next();
+};
+
 exports.getAllTour = async (req, res) => {
     try {
-
-        console.log(req.query);
-        //build query
-        //1A)filtering
-        const queryObj = { ...req.query };
-        const excludeFields = ['page', 'limit', 'sort', 'fields'];
-        excludeFields.forEach(el => delete queryObj[el]);
-        //1B)advance filtering
-        let queryStr = JSON.stringify(queryObj)
-        queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
-        let query = Tour.find(JSON.parse(queryStr));
-        // 2) Sorting
-        if (req.query.sort) {
-            const sortBy = req.query.sort.split(',').join(' ');
-            console.log(`Sorting by: ${sortBy}`); // Debugging: Log the sorting criteria
-            query = query.sort(sortBy);
-        } else {
-            query = query.sort('-createdAt'); // Default sorting if none is provided
-        }
-        //3 limiting fields
-        if (req.query.fields) {
-            fields = req.query.fields.split(',').join(' ')
-            query = query.select(fields)
-        } else {
-            query = query.select('-__v')
-        }
-        //4)pagination 
-        const page = req.query.page * 1 || 1
-        const limit = req.query.limit * 1 || 100
-        const skipVal = (page - 1) * limit
-        query = query.skip(skipVal).limit(limit)
         //excute the query
-        const tours = await query
+        const features = new APIFeatires(Tour.find(), req.query).filter().sorted().limiting().pagination()
+        const tours = await features.query
+
         //send responce
         res.status(200).json({
             status: 'success',
