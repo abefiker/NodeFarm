@@ -84,9 +84,12 @@ tourSchema.pre(/^find/, function (next) {
   this.start= Date.now()
   next()
 })
-tourSchema.post('find', function (docs, next) {
+tourSchema.post(/^find/, function (docs, next) {
     console.log(`Query took ${Date.now() - this.start}  milliseconds`)
-    console.log(docs)
+    next()
+})
+tourSchema.pre('aggregate',function(next){
+    console.log(this.pipeline())
     next()
 })
 
