@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 const slugify = require('slugify')
+<<<<<<< HEAD
 // const validator = require('validator')
+=======
+const validator = require('validator')
+>>>>>>> 9cc139ff9e3639151809ea873425fd8dac6e3270
 const tourSchema = new mongoose.Schema({
   name: {
     type: String,

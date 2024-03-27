@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const User = require('../models/userModel')
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
@@ -38,3 +39,35 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
         user: null
     })
 })
+=======
+exports.getAllusers = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
+exports.getUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
+exports.createUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
+exports.updateUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
+exports.deleteUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Not Implemented yet'
+    })
+}
+>>>>>>> 9cc139ff9e3639151809ea873425fd8dac6e3270
