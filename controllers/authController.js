@@ -38,6 +38,7 @@ exports.login = catchAsync(async (req, res, next) => {
     })
 })
 exports.protect = catchAsync(async (req, res, next) => {
+    //protecting existing route
     let token
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1]
