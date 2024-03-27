@@ -26,11 +26,7 @@ class APIFeatires {
     }
     limiting() {
         if (this.queryString.fields) {
-<<<<<<< HEAD
             const fields = this.queryString.fields.split(',').join(' ');
-=======
-            fields = this.queryString.fields.split(',').join(' ')
->>>>>>> 9cc139ff9e3639151809ea873425fd8dac6e3270
             this.query = this.query.select(fields)
         } else {
             this.query = this.query.select('-__v')
