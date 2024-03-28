@@ -43,7 +43,12 @@ const userSchema = new mongoose.Schema({
     },
     passwordChangeAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: Date
+    passwordResetExpires: Date,
+    active :{
+        type : Boolean,
+        default : true,
+        select : false
+    }
 })
 
 userSchema.pre('save', async function (next) {
@@ -60,6 +65,10 @@ userSchema.pre('save', async function (next) {
     this.passwordChangeAt = Date.now() - 1000
     next()
 })
+userSchema.pre(/^find/, async function (next) {
+    this.find({active: {$ne :false}})
+    next()
+})
 userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
     return await bycrypt.compare(candidatePassword, userPassword);
 }
@@ -73,7 +82,6 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 userSchema.methods.createPasswordResetToken = function () {
     const resetToken = crypto.randomBytes(32).toString('hex')
     this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
-    console.log({ resetToken }, this.passwordResetToken)
     this.passwordResetExpires = Date.now() + 10 * 60 * 1000
 
     return resetToken
