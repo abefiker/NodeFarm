@@ -19,13 +19,13 @@ exports.getAllusers = catchAsync(async (req, res, next) => {
         data: users
     })
 })
-exports.getUser = catchAsync(async (req, res, next) => {
-    const user = await User.findOne({ _id: req.params.id })
-    res.status(200).json({
-        status: 'Success',
-        data: newUsersers
-    })
-})
+// exports.getUser = catchAsync(async (req, res, next) => {
+//     const user = await User.findOne({ _id: req.params.id })
+//     res.status(200).json({
+//         status: 'Success',
+//         data: newUsersers
+//     })
+// })
 
 exports.updateMe = catchAsync(async (req, res, next) => {
     //1)create error if user pots password data
@@ -45,12 +45,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     })
 
 })
-exports.deleteUser = catchAsync(async (req, res, next) => {
-    const user = await User.findOneAndDelete(req.params.id)
-    if (!user) {
-        return next(new AppError('No user found with this ID', 404))
-    }
-    res.status(200).json({
+exports.deleteMe = catchAsync(async (req, res, next) => {
+    await User.findByIdAndUpdate(req.user.id,{active:false},{new :true , runValidators:true})
+
+    res.status(204).json({
         status: 'Success',
         user: null
     })
