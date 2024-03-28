@@ -7,6 +7,7 @@ router.post('/login', authController.login)
 
 router.post('/forgotPassword', authController.forgotPassword)
 router.patch('/resetPassword/:token', authController.resetPassword)
+router.patch('/updatePassword/:id', authController.updatePassword)
 
 router.route('/').get(userController.getAllusers)
 router.route('/:id').get(userController.getUser).patch(userController.updateUser).delete(userController.deleteUser)
