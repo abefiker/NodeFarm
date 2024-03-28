@@ -14,7 +14,8 @@ const sendEmail = async options => {
         from: process.env.EMAIL_FROM,
         to: options.email,
         subject: options.subject,
-        text: options.text
+        text: options.message,
+        html: `<p>${options.message}</p>`
     }
     //3) Send the email
     await transport.sendMail(mailOptions)
