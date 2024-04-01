@@ -56,7 +56,7 @@ exports.protect = catchAsync(async (req, res, next) => {
         return next(new AppError('Your not loged in! , please log in to get access', 401))
     }
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
-    console.log(decoded)
+    // console.log(decoded)
     const currentUser = await User.findOne({ _id: decoded.id });
     if (!currentUser) {
         return next(new AppError('the user belongs to this token does no longer exists', 401))
@@ -78,6 +78,7 @@ exports.restrictTo = (...roles) => {
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email })
+    console.log(user)
     if (!user) {
         next(new AppError('user not found with this email', 404))
     }

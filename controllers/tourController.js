@@ -13,7 +13,7 @@ exports.topAliasTour = (req, res, next) => {
     next();
 };
 
-exports.getAllTour = catchAsync(async (req, res,next) => {
+exports.getAllTour = catchAsync(async (req, res, next) => {
     const features = new APIFeatires(Tour.find(), req.query)
         .filter()
         .sorted()
@@ -25,13 +25,13 @@ exports.getAllTour = catchAsync(async (req, res,next) => {
         requistedAt: req.requestTime,
         result: tours.length,
         data: {
-            tours: tours
+            tours
         }
     })
 })
-exports.getTour = catchAsync(async (req, res,next) => {
-    const tour = await Tour.findOne({ _id: req.params.id })
-    if(!tour){
+exports.getTour = catchAsync(async (req, res, next) => {
+    const tour = await Tour.findOne({ _id: req.params.id }).populate('reviews')
+    if (!tour) {
         return next(new AppError('No tour found with this ID', 404))
     }
     res.status(200).json({
@@ -42,7 +42,7 @@ exports.getTour = catchAsync(async (req, res,next) => {
     })
 })
 
-exports.createTour = catchAsync(async (req, res,next) => {
+exports.createTour = catchAsync(async (req, res, next) => {
     const newTour = await Tour.create(req.body)
     res.status(201).json({
         status: 'success',
@@ -51,12 +51,12 @@ exports.createTour = catchAsync(async (req, res,next) => {
         }
     });
 })
-exports.updateTour = catchAsync(async (req, res,next) => {
+exports.updateTour = catchAsync(async (req, res, next) => {
     const tour = await Tour.findOneAndUpdate({ _id: req.params.id }, req.body, {
         new: true,
         runValidators: true
     })
-    if(!tour){
+    if (!tour) {
         return next(new AppError('No tour found with this ID', 404))
     }
     res.status(200).json({
@@ -66,9 +66,9 @@ exports.updateTour = catchAsync(async (req, res,next) => {
         }
     })
 })
-exports.deleteTour = catchAsync(async (req, res,next) => {
+exports.deleteTour = catchAsync(async (req, res, next) => {
     const tour = await Tour.findByIdAndRemove(req.params.id)
-    if(!tour){
+    if (!tour) {
         return next(new AppError('No tour found with this ID', 404))
     }
     res.status(204).json({
@@ -79,7 +79,7 @@ exports.deleteTour = catchAsync(async (req, res,next) => {
     })
 })
 
-exports.getTourStats = catchAsync(async (req, res,next) => {
+exports.getTourStats = catchAsync(async (req, res, next) => {
     const stats = await Tour.aggregate([
         {
             $match: {
@@ -113,7 +113,7 @@ exports.getTourStats = catchAsync(async (req, res,next) => {
 })
 //the following function implement the real life business logic
 //that want the busiest month that a lot of tours registered in the given year
-exports.getMonthlyPlan = catchAsync(async (req, res,next) => {
+exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
     const year = req.params.year * 1
     const plan = await Tour.aggregate([
         {

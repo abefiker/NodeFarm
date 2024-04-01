@@ -10,6 +10,6 @@ router.route('/top-5-cheap').get(tourController.topAliasTour, tourController.get
 router.route('/tour-stats').get(getTourStats);
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
 router.route('/').get(authController.protect, tourController.getAllTour).post(tourController.createTour)
-router.route('/:id').get(tourController.getTour).patch(tourController.updateTour).delete(authController.protect,authController.restrictTo('admin','lead-guide'),tourController.deleteTour)
+router.route('/:id').get(authController.protect, tourController.getTour).patch(tourController.updateTour).delete(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.deleteTour)
 
 module.exports = router

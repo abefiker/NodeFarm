@@ -23,7 +23,7 @@ const importData = async () => {
             try {
                 await Tour.create(tour);
                 console.log(`Tour "${tour.name}" imported successfully! 😃`);
-               
+
             } catch (error) {
                 // Check if the error is due to duplicate key
                 if (error.code === 11000) {
