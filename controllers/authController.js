@@ -78,6 +78,7 @@ exports.restrictTo = (...roles) => {
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email })
+    console.log(user)
     if (!user) {
         next(new AppError('user not found with this email', 404))
     }
