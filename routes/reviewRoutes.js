@@ -1,8 +1,12 @@
 const express = require('express');
-const router = express.Router()
+const router = express.Router({mergeParams: true})
 const authController = require('../controllers/authController')
 const reviewController = require('../controllers/reviewController');
-router.route('/').post(authController.protect, reviewController.createReview)
-    .get(authController.protect, authController.restrictTo('user'), reviewController.getAllReviews)
-
+router.route('/')
+.get( reviewController.getAllReviews)
+.post(
+    authController.protect,
+    authController.restrictTo('user'),
+    reviewController.createReview
+)
 module.exports = router
