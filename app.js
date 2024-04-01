@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 //2) Routes
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
-app.use('/api/v1/reviews',reviewRouter)
+app.use('/api/v1/reviews', reviewRouter)
 app.all('*', (req, res, next) => {
     const err = new Error()
     err.status = 'fail'

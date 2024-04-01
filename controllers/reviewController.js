@@ -10,7 +10,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
     })
 })
 exports.getAllReviews = catchAsync(async (req,res,next)=>{
-    const reviews = await Review.find()
+    const reviews = await Review.find().select('-__v')
     res.status(200).json({
         status: 'Success',
         result: reviews.length,
