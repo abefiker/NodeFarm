@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = new mongoose.Schema
 
-const reviewSchema = new Schema({
+const reviewSchema =new mongoose.Schema({
     review: {
         type: String,
         required: [true, 'A review must have a review 😢'],
@@ -16,12 +15,12 @@ const reviewSchema = new Schema({
         default: Date.now()
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: [true, 'A review must belong to user']
     },
     tour: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'Tour',
         required: [true, 'A review must belong to tour']
     }
