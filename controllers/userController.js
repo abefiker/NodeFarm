@@ -2,6 +2,8 @@ const User = require('../models/userModel')
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
 const jwt = require('jsonwebtoken')
+const factory= require('./handlerFactory')
+
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {}
     Object.keys(obj).forEach(key => {
@@ -19,13 +21,7 @@ exports.getAllusers = catchAsync(async (req, res, next) => {
         data: users
     })
 })
-// exports.getUser = catchAsync(async (req, res, next) => {
-//     const user = await User.findOne({ _id: req.params.id })
-//     res.status(200).json({
-//         status: 'Success',
-//         data: newUsersers
-//     })
-// })
+exports.deleteUser = factory.deleteOne(User) 
 
 exports.updateMe = catchAsync(async (req, res, next) => {
     //1)create error if user pots password data
