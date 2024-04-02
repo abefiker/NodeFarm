@@ -21,6 +21,8 @@ exports.getAllusers = catchAsync(async (req, res, next) => {
         data: users
     })
 })
+
+exports.updateUser = factory.updateOne(User)
 exports.deleteUser = factory.deleteOne(User) 
 
 exports.updateMe = catchAsync(async (req, res, next) => {
