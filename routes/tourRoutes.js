@@ -1,8 +1,7 @@
 const express = require('express');
 const tourController = require('../controllers/tourController')
 const authController = require('../controllers/authController')
-const reviewController = require('../controllers/reviewController')
-const reviewRouter = require('../routers/reviewRouter')
+const reviewRouter = require('../routes/reviewRoutes')
 const router = express.Router()
 
 // router.param('id',tourController.checkID)
@@ -20,7 +19,7 @@ router.route('/tour-stats').get(getTourStats);
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
 router.route('/').get(authController.protect, tourController.getAllTour).post(tourController.createTour)
 router.route('/:id')
-    .get(authController.protect, tourController.getTour)
+    .get(tourController.getTour)
     .patch(tourController.updateTour)
     .delete(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.deleteTour)
 
