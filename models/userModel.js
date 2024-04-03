@@ -32,16 +32,16 @@ const userSchema = new mongoose.Schema({
         select: false
     },
     passwordConfirm: {
-        type: String
-        // required: [true, 'Please confirm your password'],
-        // validate: {
-        //     validator: function (passwordConfirm) {
-        //         return passwordConfirm === this.password;
-        //     },
-        //     message: props => `${props.value} is not the same as password!`
-        // }
+        type: String,
+        required: [true, 'Please confirm your password'],
+        validate: {
+            validator: function (passwordConfirm) {
+                return passwordConfirm === this.password;
+            },
+            message: props => `${props.value} is not the same as password!`
+        }
     },
-    // passwordChangeAt: Date,
+    passwordChangeAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
     active :{
@@ -51,20 +51,20 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-// userSchema.pre('save', async function (next) {
-//     //only run this function if password was actually modified
-//     if (!this.isModified('password')) return next();
-//     // hash a password with cost of 12
-//     this.password = await bycrypt.hash(this.password, 12)
-//     this.passwordConfirm = undefined;
-//     next()
-// })
-// userSchema.pre('save', async function (next) {
-//     if (!this.isModified('password') || this.isNew) return next();
+userSchema.pre('save', async function (next) {
+    //only run this function if password was actually modified
+    if (!this.isModified('password')) return next();
+    // hash a password with cost of 12
+    this.password = await bycrypt.hash(this.password, 12)
+    this.passwordConfirm = undefined;
+    next()
+})
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password') || this.isNew) return next();
 
-//     this.passwordChangeAt = Date.now() - 1000
-//     next()
-// })
+    this.passwordChangeAt = Date.now() - 1000
+    next()
+})
 userSchema.pre(/^find/, async function (next) {
     this.find({active: {$ne :false}})
     next()
