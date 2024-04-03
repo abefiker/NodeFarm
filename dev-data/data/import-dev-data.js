@@ -1,6 +1,10 @@
 const fs = require('fs');
 const mongoose = require('mongoose')
 const Tour = require('../../models/tourModel')
+const Review = require('../../models/reviewModel')
+const User = require('../../models/userModel')
+
+
 const dotenv = require('dotenv')
 dotenv.config({ path: './config.env' })
 
@@ -16,14 +20,16 @@ mongoose
     })
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'))
+const reviews = JSON.parse(fs.readFileSync(`${__dirname}/reviews.json`, 'utf-8'))
+const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8'))
 
 const importData = async () => {
     try {
+        // Import tours
         for (const tour of tours) {
             try {
                 await Tour.create(tour);
                 console.log(`Tour "${tour.name}" imported successfully! 😃`);
-
             } catch (error) {
                 // Check if the error is due to duplicate key
                 if (error.code === 11000) {
@@ -33,8 +39,40 @@ const importData = async () => {
                 }
             }
         }
+
+        // Import users
+        for (const user of users) {
+            try {
+                await User.create(user);
+                console.log(`User "${user.name}" imported successfully! 😃`);
+            } catch (error) {
+                // Check if the error is due to duplicate key
+                if (error.code === 11000) {
+                    console.log(`User "${user.name}" already exists, skipping...`);
+                } else {
+                    throw error; // Rethrow other errors
+                }
+            }
+        }
+
+        // Import reviews
+        for (const review of reviews) {
+            try {
+                await Review.create(review);
+                console.log(`Review by "${review.user}" imported successfully! 😃`);
+            } catch (error) {
+                // Check if the error is due to duplicate key
+                if (error.code === 11000) {
+                    console.log(`Review by "${review.user}" already exists, skipping...`);
+                } else {
+                    throw error; // Rethrow other errors
+                }
+            }
+        }
+
+
         console.log('All data imported successfully! 😀😃😄😁😆😅😂🙂😉😊😇😍');
-        process.exit(0)
+        process.exit(0);
     } catch (error) {
         console.log(error);
     }
@@ -45,6 +83,8 @@ const importData = async () => {
 const deleteData = async () => {
     try {
         await Tour.deleteMany({})
+        await Review.deleteMany({})
+        await User.deleteMany({})
         console.log('Data deleted successfully! 🥲😢😭😿🥹')
         process.exit(0)
     } catch (error) {
