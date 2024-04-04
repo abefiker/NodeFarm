@@ -2,15 +2,17 @@ const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
 const APIFeatures = require('../utils/apiFeatures');
 exports.deleteOne = Model => catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndRemove(req.params.id)
+    // Using findOneAndDelete with a query object to specify the document ID
+    const doc = await Model.findOneAndDelete({ _id: req.params.id });
     if (!doc) {
-        return next(new AppError('No document found with this ID', 404))
+        return next(new AppError('No document found with this ID', 404));
     }
     res.status(204).json({
         status: 'success',
         data: null
-    })
-})
+    });
+});
+
 
 exports.updateOne = Model => catchAsync(async (req, res, next) => {
     const doc = await Model.findOneAndUpdate({ _id: req.params.id }, req.body, {
