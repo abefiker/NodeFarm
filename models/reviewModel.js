@@ -49,26 +49,51 @@ reviewSchema.pre(/^find/, function (next) {
     //     })
     next()
 })
-reviewSchema.static.CalcuAvarageRating = async function (tourId) {
-    const stats = await this.aggregate([
-        {
-            $match: {
-                tour: tourId
+
+reviewSchema.statics.calcuAvarageRatings = async function (tourId) {
+    try {
+        const stats = await this.aggregate([
+            {
+                $match: { tour: tourId }
             },
-            $group: {
-                __id: tourId,
-                nRating: { $sum: 1 },
-                avgrating: { $avg: '$rating' }
+            {
+                $group: {
+                    _id: '$tour',
+                    nRating: { $sum: 1 },
+                    avgRating: { $avg: '$rating' }
+                }
             }
+        ]);
+
+        if (stats.length > 0) {
+            await Tour.findByIdAndUpdate(tourId, {
+                ratingsQuantity: stats[0].nRating,
+                ratingsAverage: stats[0].avgRating
+            });
+        } else {
+            // Reset to defaults if no reviews are found
+            await Tour.findByIdAndUpdate(tourId, {
+                ratingsQuantity: 0,
+                ratingsAverage: 4.5 // Assuming 4.5 is a sensible default
+            });
         }
-    ])
-    await Tour.findByIdAndUpdate(tourId, {
-        ratingsQuantity: stats[0].nRating,
-        ratingsAverage: stats[0].avgrating
-    })
-}
-reviewSchema.post('save', function () {
-    this.constructor.CalcuAvarageRating(this.tour)
+    } catch (error) {
+        console.error('Failed to calculate average ratings', error);
+        // Handle the error appropriately
+    }
+};
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+    this.r = await this.findOne()
+    next()
 })
+reviewSchema.post(/^findOneAnd/, async function () {
+    await this.constructor.calcuAvarageRatings(this.r.tour)
+})
+reviewSchema.post('save', function () {
+    //this point to the current review
+    this.constructor.calcuAvarageRatings(this.tour)
+})
+
 const Review = mongoose.model('Review', reviewSchema)
 module.exports = Review

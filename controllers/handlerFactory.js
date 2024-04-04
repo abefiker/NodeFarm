@@ -61,7 +61,7 @@ exports.getAll = Model => catchAsync(async (req, res, next) => {
         .sorted()
         .limiting()
         .pagination()
-    const doc = await features.query.explain()
+    const doc = await features.query
     res.status(200).json({
         status: 'success',
         requistedAt: req.requestTime,
