@@ -163,10 +163,10 @@ tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start}  milliseconds`)
   next()
 })
-tourSchema.pre('aggregate', function (next) {
-  console.log(this.pipeline())
-  next()
-})
+// tourSchema.pre('aggregate', function (next) {
+//   console.log(this.pipeline())
+//   next()
+// })
 
 const Tour = mongoose.model('Tour', tourSchema)
 
