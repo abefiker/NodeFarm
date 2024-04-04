@@ -4,23 +4,28 @@ const authController = require('../controllers/authController')
 const reviewRouter = require('../routes/reviewRoutes')
 const router = express.Router()
 
-// router.param('id',tourController.checkID)
-// router.route('/:tourId/reviews')
-// .post(
-//     authController.protect, 
-//     authController.restrictTo('user'), 
-//     reviewController.createReview
-// );
-router.use('/:tourId/reviews',reviewRouter)
+
+router.use('/:tourId/reviews', reviewRouter)
+
 const { getTourStats, getMonthlyPlan } = require('../controllers/tourController');
 
 router.route('/top-5-cheap').get(tourController.topAliasTour, tourController.getAllTour);
 router.route('/tour-stats').get(getTourStats);
-router.route('/monthly-plan/:year').get(getMonthlyPlan);
-router.route('/').get(authController.protect, tourController.getAllTour).post(tourController.createTour)
+router.route('/monthly-plan/:year').get(authController.protect,
+    authController.restrictTo('admin', 'lead-guide', 'guide'),
+    getMonthlyPlan);
+
+router.route('/tours-within/:distance/center/:latlng/unit/:unit').get(tourController.getToursWithin)
+router.route('/distance/:latlng/unit/:unit').get(tourController.getDistance)
+//tours-within/234/center/-40,40/unit/ml(km)
+
+router.route('/')
+    .get(tourController.getAllTour)
+    .post(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.createTour)
+
 router.route('/:id')
     .get(tourController.getTour)
-    .patch(tourController.updateTour)
+    .patch(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.updateTour)
     .delete(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.deleteTour)
 
 
