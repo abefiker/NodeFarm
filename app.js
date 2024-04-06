@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express');
 const app = express()
 const rateLimit = require('express-rate-limit')
@@ -12,6 +13,12 @@ const globalErrorHandler = require('./controllers/errorController')
 const tourRouter = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes')
 const reviewRouter = require('./routes/reviewRoutes')
+const viewRouter = require('./routes/viewRoutes')
+
+app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, 'views'))
+
+app.use(express.static(path.join(__dirname, 'public')))
 //1) Global Middlewares
 //set secure http headers
 app.use(helmet())
@@ -37,7 +44,6 @@ app.use(hpp({
     ]
 }))
 //serving static files
-app.use(express.static(`${__dirname}/public`))
 //Test middleware
 app.use((req, res, next) => {
     console.log('Hello from the middleware 👋')
@@ -60,6 +66,8 @@ app.use((req, res, next) => {
 })
 
 //2) Routes
+
+app.use('/', viewRouter)
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/reviews', reviewRouter)
