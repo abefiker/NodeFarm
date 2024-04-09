@@ -1,18 +1,23 @@
 const login = async (email, password) => {
-    console.log(email, password)
     try {
         const res = await axios({
-            method: 'POST',
-            url: 'http://localhost:8080/api/v1/users/login',
+            method:'POST',
+            url :'http://localhost:8080/api/v1/users/login',
             data: {
                 email,
                 password
             }
         })
-        console.log(res)
+        if(res.data.status === 'Success'){
+            alert('Logged in successfully')
+            window.setTimeout(()=>{
+                window.location.href = '/';
+            },1500)
+        }
     } catch (err) {
-        console.log(err)
+        alert(err.responce.data.message)
     }
+
 }
 document.querySelector('.form').addEventListener('submit', e => {
     e.preventDefault();

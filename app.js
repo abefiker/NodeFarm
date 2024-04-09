@@ -1,11 +1,13 @@
-const path = require('path')
 const express = require('express');
+const path = require('path')
 const app = express()
+
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const mongoSanitizer = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
+const cookieParser = require('cookie-parser')
 
 const morgan = require('morgan')
 const AppError = require('./utils/appError')
@@ -21,13 +23,14 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.static(path.join(__dirname, 'public')))
 //1) Global Middlewares
 //set secure http headers
-app.use(helmet())
+app.use( helmet({ contentSecurityPolicy: false }) );
 //development logging 
 if (process.env.NODE_ENV !== 'development') {
     app.use(morgan('dev'))
 }
 //body parser , reading data from body to req.body 
 app.use(express.json({ limit: '10kb' }))
+app.use(cookieParser())
 //Data sanitization against NoSql query injection
 app.use(mongoSanitizer())
 //Data sanitization against xss
@@ -61,7 +64,7 @@ const limiter = rateLimit({
 app.use('/api', limiter)
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString()
-
+    console.log(req.cookies)
     next()
 })
 
