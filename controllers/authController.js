@@ -25,6 +25,16 @@ const createSendToken = (user, statusCode, res) => {
         data: user
     })
 }
+exports.logout = (req, res) => {
+    res.cookie('jwt', 'logout', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    })
+    res.status(200).json({
+        status: 'Success',
+        message: 'Logged out'
+    })
+}
 exports.signup = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
         name: req.body.name,
@@ -70,26 +80,30 @@ exports.protect = catchAsync(async (req, res, next) => {
     next()
 })
 //only for rendering pages , no errors!
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
-    // Protecting existing route
-    if (req.cookies.jwt) {
-        // Verify token
-        const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
-        // Check if a user still exists
-        const currentUser = await User.findOne({ _id: decoded.id });
-        if (!currentUser) {
+exports.isLoggedIn = async (req, res, next) => {
+    try {
+        // Protecting existing route
+        if (req.cookies.jwt) {
+            // Verify token
+            const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+            // Check if a user still exists
+            const currentUser = await User.findOne({ _id: decoded.id });
+            if (!currentUser) {
+                return next();
+            }
+            // Check if user changed password after the token was issued
+            if (currentUser.changedPasswordAfter(decoded.iat)) {
+                return next();
+            }
+            // There is a logged-in user
+            res.locals.user = currentUser;
             return next();
         }
-        // Check if user changed password after the token was issued
-        if (currentUser.changedPasswordAfter(decoded.iat)) {
-            return next();
-        }
-        // There is a logged-in user
-        res.locals.user = currentUser;
+    } catch (err) {
         return next();
     }
-        next();
-});
+    next();
+};
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {

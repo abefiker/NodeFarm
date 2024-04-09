@@ -104,7 +104,7 @@ body {
   box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.25);
 }
 
-.alert--success {
+.alert--Success {
   background-color: #20bf6b;
 }
 
@@ -130,6 +130,7 @@ body {
 }
 
 .heading-secondary--error {
+  margin-top: 70px;
   background-image: -webkit-gradient(linear,
       left top,
       right top,
@@ -1289,6 +1290,7 @@ body {
 .error__emoji {
   font-size: 3.75rem;
   margin-left: 1rem;
+  margin-top: 100px;
 }
 
 .error__msg {
